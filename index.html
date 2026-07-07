@@ -3,200 +3,402 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Премиум Трекинг Грузов</title>
-    <!-- Подключаем стильные шрифты и иконки -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Отслеживание груза Бишкек - Москва</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root {
-            --bg-color: #0b0f19;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --border-color: rgba(255, 255, 255, 0.08);
-            --accent-color: #38bdf8; /* Неоновый голубой */
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
+        /* --- СТИЛИ ДИЗАЙНА DESERT OASIS --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            background: #fbfbf9; 
+            color: #2d2319; 
+            font-family: 'Inter', sans-serif; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px;
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-x: hidden; }
-
-        /* Задний фон с эффектом свечения */
-        .glow-bg { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, rgba(0,0,0,0) 70%); top: -10%; left: -10%; z-index: -1; }
-        .glow-bg-2 { position: absolute; width: 500px; height: 500px; background: radial-gradient(circle, rgba(56, 189, 248, 0.05) 0%, rgba(0,0,0,0) 70%); bottom: -10%; right: -10%; z-index: -1; }
-
-        .container { width: 100%; max-width: 650px; padding: 20px; z-index: 2; }
         
-        .header { text-align: center; margin-bottom: 40px; }
-        .header h1 { font-size: 2.5rem; font-weight: 700; letter-spacing: -1px; margin-bottom: 10px; background: linear-gradient(to right, #fff, #9ca3af); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .header p { color: var(--text-muted); font-size: 1rem; }
-
-        /* Поле поиска */
-        .search-box { position: relative; background: var(--card-bg); border: 1px solid var(--border-color); padding: 8px; border-radius: 16px; backdrop-filter: blur(12px); display: flex; box-shadow: 0 20px 40px rgba(0,0,0,0.4); transition: all 0.3s ease; }
-        .search-box:focus-within { border-color: var(--accent-color); box-shadow: 0 0 25px rgba(56, 189, 248, 0.2); }
-        .search-box input { flex: 1; background: transparent; border: none; outline: none; color: #fff; font-size: 1.1rem; padding: 12px 15px; text-transform: uppercase; }
-        .search-box input::placeholder { text-transform: none; color: var(--text-muted); }
-        .search-box button { background: var(--accent-color); color: #000; border: none; padding: 0 25px; border-radius: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
-        .search-box button:hover { opacity: 0.9; transform: scale(0.98); }
-
-        /* Карточка результата (Изначально скрыта) */
-        .result-card { display: none; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 24px; padding: 30px; margin-top: 30px; backdrop-filter: blur(12px); box-shadow: 0 30px 60px rgba(0,0,0,0.4); animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+        .search-container {
+            width: 100%;
+            max-width: 520px;
+            text-align: center;
+            margin-bottom: 30px;
         }
+        .search-container h1 {
+            font-size: 1.8rem;
+            color: #4a3728;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+            background: #fff;
+            padding: 6px;
+            border-radius: 16px;
+            border: 1px solid #e7dfd5;
+            box-shadow: 0 4px 12px rgba(45, 35, 25, 0.02);
+        }
+        .search-box input {
+            flex: 1;
+            border: none;
+            padding: 12px 16px;
+            font-size: 1rem;
+            outline: none;
+            background: transparent;
+            font-family: inherit;
+        }
+        .search-box button {
+            background: #a78261;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .search-box button:hover { background: #8e6b4e; }
 
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
-        .track-id { font-weight: 700; font-size: 1.3rem; color: var(--accent-color); }
-        .status-badge { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: var(--accent-color); }
-
-        /* Маршрут от и до */
-        .route-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; position: relative; }
-        .route-point { flex: 1; }
-        .route-point.end { text-align: right; }
-        .route-point label { display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
-        .route-point p { font-size: 1.2rem; font-weight: 600; }
-        
-        /* Анимированная линия пути */
-        .progress-container { position: relative; width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; margin: 25px 0; overflow: hidden; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, var(--accent-color)); width: 0%; transition: width 1.5s cubic-bezier(0.1, 1, 0.1, 1); position: relative; }
-        .progress-bar::after { content: ''; position: absolute; right: 0; top: -3px; width: 12px; height: 12px; background: #fff; border-radius: 50%; box-shadow: 0 0 15px var(--accent-color); }
-
-        /* Детали */
-        .info-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.95rem; }
-        .info-row span:first-child { color: var(--text-muted); }
-        .info-row span:last-child { font-weight: 600; }
-
-        .description-box { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 15px; margin-top: 20px; border-left: 3px solid var(--accent-color); font-size: 0.9rem; line-height: 1.5; color: #d1d5db; }
-
-        /* Ошибки и Лоадер */
-        .error-msg { display: none; color: #ef4444; text-align: center; margin-top: 15px; font-size: 0.9rem; }
-        .loader { display: none; margin: 20px auto; border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--accent-color); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        .loader {
+            display: none;
+            border: 3px solid #f0eae1;
+            border-radius: 50%;
+            border-top: 3px solid #a78261;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .error-msg {
+            display: none;
+            color: #b91c1c;
+            background: #fef2f2;
+            padding: 12px;
+            border-radius: 12px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            border: 1px solid #fee2e2;
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* --- КАРТОЧКА РЕЗУЛЬТАТА --- */
+        .main-card { 
+            display: none; 
+            width: 100%;
+            max-width: 520px;
+            background: #ffffff; 
+            border: 1px solid #e7dfd5; 
+            border-radius: 24px; 
+            padding: 30px; 
+            box-shadow: 0 20px 40px rgba(45, 35, 25, 0.04); 
+            animation: fadeIn 0.4s ease forwards;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .card-top { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start; 
+            margin-bottom: 25px; 
+        }
+        .route-label { 
+            font-size: 0.75rem; 
+            color: #9c8e81; 
+            text-transform: uppercase; 
+            letter-spacing: 0.8px;
+            margin-bottom: 4px;
+        }
+        .track-title { 
+            font-size: 1.8rem; 
+            font-weight: 700; 
+            color: #4a3728; 
+            letter-spacing: -0.5px;
+        }
+        .badge { 
+            background: #f5efe6; 
+            color: #846244; 
+            padding: 6px 14px; 
+            border-radius: 30px; 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+        }
+
+        .route-container { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: #fcfbfa;
+            border: 1px solid #f3eee7;
+            padding: 15px 20px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+        .point-name { font-size: 1.2rem; font-weight: 600; color: #4a3728; }
+        .route-point.end { text-align: right; }
+
+        /* --- ТАЙМЛАЙН НА 5 ШАГОВ --- */
+        .timeline {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 35px;
+            padding: 0 5px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #f0eae1;
+            z-index: 1;
+        }
+        .timeline-progress {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            width: 0%; 
+            height: 4px;
+            background: #a78261;
+            z-index: 2;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .step {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 20%; /* Равномерно распределяем 5 шагов */
+        }
+        .step-node {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #fff;
+            border: 4px solid #f0eae1;
+            transition: all 0.4s;
+        }
+        .step-text {
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: #9c8e81;
+            margin-top: 8px;
+            text-transform: uppercase;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .step.active .step-node { border-color: #a78261; background: #a78261; }
+        .step.active .step-text { color: #4a3728; font-weight: 600; }
+        .step.completed .step-node { border-color: #a78261; background: #fff; display: flex; align-items: center; justify-content: center; }
+        .step.completed .step-node::after {
+            content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 0.6rem; color: #a78261;
+        }
+
+        .details-box { 
+            background: #fbfbf9; 
+            border-radius: 14px; 
+            padding: 18px; 
+            color: #61554a; 
+            font-size: 0.9rem; 
+            border-left: 4px solid #a78261;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+        .details-box strong { color: #4a3728; }
+
+        /* КНОПКА WHATSAPP */
+        .btn-whatsapp {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: #25D366; color: #fff; text-decoration: none; padding: 14px;
+            border-radius: 14px; font-weight: 600; font-size: 0.95rem; transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.15);
+        }
+        .btn-whatsapp:hover { 
+            background: #20ba56; 
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.25);
+        }
+        
+        .update-time { text-align: center; font-size: 0.75rem; color: #9c8e81; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="glow-bg"></div>
-    <div class="glow-bg-2"></div>
-
-    <div class="container">
-        <div class="header">
-            <h1>LOGISTICS TRACKING</h1>
-            <p>Введите ваш трек-код для мгновенного поиска машины</p>
-        </div>
-
+    <div class="search-container">
+        <h1>Отслеживание Cargo</h1>
         <div class="search-box">
-            <input type="text" id="trackInput" placeholder="Например: UMMA-777" autocomplete="off">
-            <button onclick="trackCargo()">
-                <span>Поиск</span>
-                <i class="fa-solid fa-arrow-right"></i>
-            </button>
+            <input type="text" id="trackInput" placeholder="Введите ваш трек-код...">
+            <button onclick="trackCargo()">Поиск</button>
+        </div>
+        <div class="loader" id="loader"></div>
+        <div class="error-msg" id="errorMsg"></div>
+    </div>
+
+    <div class="main-card" id="resultCard">
+        <div class="card-top">
+            <div>
+                <div class="route-label">Номер отслеживания</div>
+                <div class="track-title" id="resID">-</div>
+            </div>
+            <span class="badge" id="resStatus">В ПУТИ</span>
         </div>
 
-        <div class="loader" id="loader"></div>
-        <div class="error-msg" id="errorMsg">Груз с таким номером не найден. Проверьте правильность ввода.</div>
-
-        <!-- КАРТОЧКА С ЭФФЕКТОМ ВАУ -->
-        <div class="result-card" id="resultCard">
-            <div class="card-header">
-                <div class="track-id" id="resID">UMMA-777</div>
-                <div class="status-badge" id="resStatus">В ПУТИ</div>
+        <div class="route-container">
+            <div class="route-point">
+                <div class="route-label">Откуда</div>
+                <div class="point-name" id="resLocation">-</div>
             </div>
-
-            <div class="route-info">
-                <div class="route-point">
-                    <label>Откуда</label>
-                    <p id="resLocation">Гуанчжоу</p>
-                </div>
-                <div class="route-point end">
-                    <label>Куда</label>
-                    <p id="resDestination">Бишкек</p>
-                </div>
+            <div style="color: #c4b9ac; font-size: 1.1rem;"><i class="fa-solid fa-arrow-right-long"></i></div>
+            <div class="route-point end">
+                <div class="route-label">Куда</div>
+                <div class="point-name" id="resDestination">-</div>
             </div>
+        </div>
 
-            <div class="progress-container">
-                <div class="progress-bar" id="resProgress"></div>
-            </div>
+        <div class="timeline">
+            <div class="timeline-progress" id="timelineProgress"></div>
+            <div class="step" id="step1"><div class="step-node"></div><div class="step-text">Склад БШК</div></div>
+            <div class="step" id="step2"><div class="step-node"></div><div class="step-text">Граница КЗ</div></div>
+            <div class="step" id="step3"><div class="step-node"></div><div class="step-text">По КЗ</div></div>
+            <div class="step" id="step4"><div class="step-node"></div><div class="step-text">Граница РФ</div></div>
+            <div class="step" id="step5"><div class="step-node"></div><div class="step-text">Москва</div></div>
+        </div>
 
-            <div class="info-row">
-                <span>Последнее обновление:</span>
-                <span id="resUpdate">06.07.2026 12:30</span>
-            </div>
+        <div class="details-box">
+            <strong>Информация о грузе:</strong><br>
+            <span id="resDetails">-</span>
+        </div>
 
-            <div class="description-box" id="resDetails">
-                Машина загружена, выехала со склада. Ориентировочное время в пути 7-9 дней.
-            </div>
+        <a href="#" target="_blank" class="btn-whatsapp" id="waLink">
+            <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> Задать вопрос в WhatsApp
+        </a>
+        
+        <div class="update-time">
+            <i class="fa-regular fa-clock"></i> Обновлено: <span id="resUpdate">-</span>
         </div>
     </div>
 
     <script>
-        // Ссылка на экспорт таблицы в формате TSV (исправлено под тип вашей ссылки)
-        const TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8MG9Zx-E_5zoVrSihWFt0_nqMw9ueoDhT_dmJRWLSV8eGNCm293V4rPg-za8S9DeyS4ZdkOkcxS7f/pub?output=tsv';
-        
+        // !!! ВСТАВЬТЕ СЮДА ID ВАШЕЙ GOOGLE ТАБЛИЦЫ !!!
+        const SHEET_ID = 'ЗАМЕНИТЕ_НА_ВАШ_ID_GOOGLE_ТАБЛИЦЫ'; 
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+
+        // !!! ВСТАВЬТЕ СЮДА ВАШ НОМЕР ТЕЛЕФОНА ДЛЯ WHATSAPP (начиная с код страны, без плюса) !!!
+        // Например: 996555123456 (для Кыргызстана) или 79991234567 (для России)
+        const WHATSAPP_PHONE = '996XXXXXXXXX'; 
+
         async function trackCargo() {
             const input = document.getElementById('trackInput').value.trim().toUpperCase();
             const loader = document.getElementById('loader');
-            const errorMsg = document.getElementById('errorMsg');
             const card = document.getElementById('resultCard');
+            const errorBlock = document.getElementById('errorMsg');
 
             if (!input) return;
 
-            // Сброс состояний
             card.style.display = 'none';
-            errorMsg.style.display = 'none';
+            errorBlock.style.display = 'none';
             loader.style.display = 'block';
 
             try {
-                // Прямой запрос к данным таблицы
-                const response = await fetch(TSV_URL);
-                if (!response.ok) throw new Error('Network error');
-                
-                const data = await response.text();
-                
-                // Разбираем строки (учитываем возможные переносы строк в разных ОС)
-                const rows = data.split(/\r?\n/).map(row => row.split('\t'));
-                
-                // Ищем нужный трек-код в первой колонке (индекс 0)
-                const cargo = rows.find(row => row[0] && row[0].trim().toUpperCase() === input);
+                const response = await fetch(SHEET_URL);
+                const text = await response.text();
+                const jsonData = JSON.parse(text.substr(47).slice(0, -2));
+                const rows = jsonData.table.rows;
 
-                if (cargo) {
-                    // Наполняем элементы данными из колонок таблицы
-                    document.getElementById('resID').innerText = cargo[0] || '';
-                    document.getElementById('resStatus').innerText = cargo[1] || 'В ПУТИ';
-                    document.getElementById('resLocation').innerText = cargo[2] || '-';
-                    document.getElementById('resDestination').innerText = cargo[3] || '-';
-                    document.getElementById('resUpdate').innerText = cargo[5] || '-';
-                    document.getElementById('resDetails').innerText = cargo[6] || 'Нет дополнительных деталей.';
+                let foundData = null;
+
+                for (let row of rows) {
+                    if (row.c[0] && row.c[0].v.toString().trim().toUpperCase() === input) {
+                        foundData = {
+                            id: row.c[0] ? row.c[0].v : '',
+                            status: row.c[1] ? row.c[1].v : 'В пути',
+                            location: row.c[2] ? row.c[2].v : '-',
+                            destination: row.c[3] ? row.c[3].v : '-',
+                            progress: row.c[4] ? parseFloat(row.c[4].v) : 0,
+                            update: row.c[5] ? row.c[5].f || row.c[5].v : '-',
+                            details: row.c[6] ? row.c[6].v : 'Нет дополнительных деталей.'
+                        };
+                        break;
+                    }
+                }
+
+                if (foundData) {
+                    document.getElementById('resID').innerText = foundData.id;
+                    document.getElementById('resStatus').innerText = foundData.status.toUpperCase();
+                    document.getElementById('resLocation').innerText = foundData.location;
+                    document.getElementById('resDestination').innerText = foundData.destination;
+                    document.getElementById('resUpdate').innerText = foundData.update;
+                    document.getElementById('resDetails').innerText = foundData.details;
+                    
+                    // Формирование ссылки WhatsApp с готовым текстом
+                    const messageText = encodeURIComponent(`Здравствуйте! У меня вопрос по поводу моего груза. Трек-номер: ${foundData.id}`);
+                    document.getElementById('waLink').href = `https://wa.me/${WHATSAPP_PHONE}?text=${messageText}`;
 
                     loader.style.display = 'none';
                     card.style.display = 'block';
 
-                    // Прогресс бар
-                    const progressValue = parseInt(cargo[4]) || 0;
-                    setTimeout(() => {
-                        document.getElementById('resProgress').style.width = progressValue + '%';
-                    }, 100);
+                    // Логика расчета шагов для 5 точек
+                    updateTimeline(foundData.progress);
                 } else {
-                    loader.style.display = 'none';
-                    errorMsg.style.display = 'block';
+                    throw new Error('Груз с таким номером не найден. Проверьте правильность ввода.');
                 }
 
             } catch (error) {
-                console.error(error);
                 loader.style.display = 'none';
-                errorMsg.innerText = 'Ошибка соединения с базой данных. Проверьте публикацию таблицы.';
-                errorMsg.style.display = 'block';
+                errorBlock.innerText = error.message.includes('Unexpected') ? 'Ошибка соединения с базой данных. Проверьте публикацию таблицы.' : error.message;
+                errorBlock.style.display = 'block';
             }
         }
 
-        // Поиск по нажатию на Enter в инпуте
-        document.getElementById('trackInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                trackCargo();
+        function updateTimeline(progress) {
+            const bar = document.getElementById('timelineProgress');
+            const s1 = document.getElementById('step1');
+            const s2 = document.getElementById('step2');
+            const s3 = document.getElementById('step3');
+            const s4 = document.getElementById('step4');
+            const s5 = document.getElementById('step5');
+
+            [s1, s2, s3, s4, s5].forEach(s => s.className = 'step');
+
+            // Распределяем прогресс на 4 промежутка (0%, 25%, 50%, 75%, 100%)
+            if (progress <= 15) {
+                bar.style.width = '0%';
+                s1.classList.add('active');
+            } else if (progress > 15 && progress <= 40) {
+                bar.style.width = '25%';
+                s1.classList.add('completed');
+                s2.classList.add('active');
+            } else if (progress > 40 && progress <= 65) {
+                bar.style.width = '50%';
+                s1.classList.add('completed');
+                s2.classList.add('completed');
+                s3.classList.add('active');
+            } else if (progress > 65 && progress <= 85) {
+                bar.style.width = '75%';
+                s1.classList.add('completed');
+                s2.classList.add('completed');
+                s3.classList.add('completed');
+                s4.classList.add('active');
+            } else if (progress > 85) {
+                bar.style.width = '100%';
+                s1.classList.add('completed');
+                s2.classList.add('completed');
+                s3.classList.add('completed');
+                s4.classList.add('completed');
+                s5.classList.add('active');
             }
-        });
+        }
     </script>
 </body>
 </html>
