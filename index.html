@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Премиум Трекинг Грузов</title>
+    <!-- Подключаем стильные шрифты и иконки -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-color: #38bdf8; /* Неоновый голубой */
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-x: hidden; }
+
+        /* Задний фон с эффектом свечения */
+        .glow-bg { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, rgba(0,0,0,0) 70%); top: -10%; left: -10%; z-index: -1; }
+        .glow-bg-2 { position: absolute; width: 500px; height: 500px; background: radial-gradient(circle, rgba(56, 189, 248, 0.05) 0%, rgba(0,0,0,0) 70%); bottom: -10%; right: -10%; z-index: -1; }
+
+        .container { width: 100%; max-width: 650px; padding: 20px; z-index: 2; }
+        
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { font-size: 2.5rem; font-weight: 700; letter-spacing: -1px; margin-bottom: 10px; background: linear-gradient(to right, #fff, #9ca3af); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header p { color: var(--text-muted); font-size: 1rem; }
+
+        /* Поле поиска */
+        .search-box { position: relative; background: var(--card-bg); border: 1px solid var(--border-color); padding: 8px; border-radius: 16px; backdrop-filter: blur(12px); display: flex; box-shadow: 0 20px 40px rgba(0,0,0,0.4); transition: all 0.3s ease; }
+        .search-box:focus-within { border-color: var(--accent-color); box-shadow: 0 0 25px rgba(56, 189, 248, 0.2); }
+        .search-box input { flex: 1; background: transparent; border: none; outline: none; color: #fff; font-size: 1.1rem; padding: 12px 15px; text-transform: uppercase; }
+        .search-box input::placeholder { text-transform: none; color: var(--text-muted); }
+        .search-box button { background: var(--accent-color); color: #000; border: none; padding: 0 25px; border-radius: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        .search-box button:hover { opacity: 0.9; transform: scale(0.98); }
+
+        /* Карточка результата (Изначально скрыта) */
+        .result-card { display: none; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 24px; padding: 30px; margin-top: 30px; backdrop-filter: blur(12px); box-shadow: 0 30px 60px rgba(0,0,0,0.4); animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
+        .track-id { font-weight: 700; font-size: 1.3rem; color: var(--accent-color); }
+        .status-badge { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: var(--accent-color); }
+
+        /* Маршрут от и до */
+        .route-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; position: relative; }
+        .route-point { flex: 1; }
+        .route-point.end { text-align: right; }
+        .route-point label { display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+        .route-point p { font-size: 1.2rem; font-weight: 600; }
+        
+        /* Анимированная линия пути */
+        .progress-container { position: relative; width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; margin: 25px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, var(--accent-color)); width: 0%; transition: width 1.5s cubic-bezier(0.1, 1, 0.1, 1); position: relative; }
+        .progress-bar::after { content: ''; position: absolute; right: 0; top: -3px; width: 12px; height: 12px; background: #fff; border-radius: 50%; box-shadow: 0 0 15px var(--accent-color); }
+
+        /* Детали */
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.95rem; }
+        .info-row span:first-child { color: var(--text-muted); }
+        .info-row span:last-child { font-weight: 600; }
+
+        .description-box { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 15px; margin-top: 20px; border-left: 3px solid var(--accent-color); font-size: 0.9rem; line-height: 1.5; color: #d1d5db; }
+
+        /* Ошибки и Лоадер */
+        .error-msg { display: none; color: #ef4444; text-align: center; margin-top: 15px; font-size: 0.9rem; }
+        .loader { display: none; margin: 20px auto; border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--accent-color); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="glow-bg"></div>
+    <div class="glow-bg-2"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>LOGISTICS TRACKING</h1>
+            <p>Введите ваш трек-код для мгновенного поиска машины</p>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="trackInput" placeholder="Например: UMMA-777" autocomplete="off">
+            <button onclick="trackCargo()">
+                <span>Поиск</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <div class="loader" id="loader"></div>
+        <div class="error-msg" id="errorMsg">Груз с таким номером не найден. Проверьте правильность ввода.</div>
+
+        <!-- КАРТОЧКА С ЭФФЕКТОМ ВАУ -->
+        <div class="result-card" id="resultCard">
+            <div class="card-header">
+                <div class="track-id" id="resID">UMMA-777</div>
+                <div class="status-badge" id="resStatus">В ПУТИ</div>
+            </div>
+
+            <div class="route-info">
+                <div class="route-point">
+                    <label>Откуда</label>
+                    <p id="resLocation">Гуанчжоу</p>
+                </div>
+                <div class="route-point end">
+                    <label>Куда</label>
+                    <p id="resDestination">Бишкек</p>
+                </div>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar" id="resProgress"></div>
+            </div>
+
+            <div class="info-row">
+                <span>Последнее обновление:</span>
+                <span id="resUpdate">06.07.2026 12:30</span>
+            </div>
+
+            <div class="description-box" id="resDetails">
+                Машина загружена, выехала со склада. Ориентировочное время в пути 7-9 дней.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Ссылка на экспорт таблицы в формате TSV (исправлено под тип вашей ссылки)
+        const TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8MG9Zx-E_5zoVrSihWFt0_nqMw9ueoDhT_dmJRWLSV8eGNCm293V4rPg-za8S9DeyS4ZdkOkcxS7f/pub?output=tsv';
+        
+        async function trackCargo() {
+            const input = document.getElementById('trackInput').value.trim().toUpperCase();
+            const loader = document.getElementById('loader');
+            const errorMsg = document.getElementById('errorMsg');
+            const card = document.getElementById('resultCard');
+
+            if (!input) return;
+
+            // Сброс состояний
+            card.style.display = 'none';
+            errorMsg.style.display = 'none';
+            loader.style.display = 'block';
+
+            try {
+                // Прямой запрос к данным таблицы
+                const response = await fetch(TSV_URL);
+                if (!response.ok) throw new Error('Network error');
+                
+                const data = await response.text();
+                
+                // Разбираем строки (учитываем возможные переносы строк в разных ОС)
+                const rows = data.split(/\r?\n/).map(row => row.split('\t'));
+                
+                // Ищем нужный трек-код в первой колонке (индекс 0)
+                const cargo = rows.find(row => row[0] && row[0].trim().toUpperCase() === input);
+
+                if (cargo) {
+                    // Наполняем элементы данными из колонок таблицы
+                    document.getElementById('resID').innerText = cargo[0] || '';
+                    document.getElementById('resStatus').innerText = cargo[1] || 'В ПУТИ';
+                    document.getElementById('resLocation').innerText = cargo[2] || '-';
+                    document.getElementById('resDestination').innerText = cargo[3] || '-';
+                    document.getElementById('resUpdate').innerText = cargo[5] || '-';
+                    document.getElementById('resDetails').innerText = cargo[6] || 'Нет дополнительных деталей.';
+
+                    loader.style.display = 'none';
+                    card.style.display = 'block';
+
+                    // Прогресс бар
+                    const progressValue = parseInt(cargo[4]) || 0;
+                    setTimeout(() => {
+                        document.getElementById('resProgress').style.width = progressValue + '%';
+                    }, 100);
+                } else {
+                    loader.style.display = 'none';
+                    errorMsg.style.display = 'block';
+                }
+
+            } catch (error) {
+                console.error(error);
+                loader.style.display = 'none';
+                errorMsg.innerText = 'Ошибка соединения с базой данных. Проверьте публикацию таблицы.';
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        // Поиск по нажатию на Enter в инпуте
+        document.getElementById('trackInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                trackCargo();
+            }
+        });
+    </script>
+</body>
+</html>
